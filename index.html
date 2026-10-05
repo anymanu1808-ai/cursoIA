@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Curso básico de Inteligencia Artificial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f5;--fg:#12262b;--mut:#51666b;--card:#fff;--ac:#0e5a63;--hi:#e8a317;--ok:#1b7f4b;--ko:#b3261e;--bd:#cfdcdb}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1a1d;--fg:#e6f0ef;--mut:#9bb3b4;--card:#14272b;--ac:#6fc7d1;--hi:#f0b93a;--ok:#5fd394;--ko:#ff8a80;--bd:#27434a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.65 "Source Serif 4",Georgia,serif}
+h1,h2,h3,button,nav{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+header{padding:56px 6vw 40px;max-width:980px;margin:auto}
+h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;margin:0 0 12px;font-weight:800;letter-spacing:-.02em}
+header p{max-width:60ch;color:var(--mut);margin:0}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;gap:6px;overflow-x:auto;padding:10px 6vw;z-index:5}
+nav button{white-space:nowrap;border:1px solid var(--bd);background:transparent;color:var(--fg);padding:7px 14px;border-radius:99px;cursor:pointer;font-size:.9rem}
+nav button.on{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+nav button.done::after{content:" ✓"}
+main{max-width:980px;margin:auto;padding:32px 6vw 80px}
+button:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.mod h2{font-size:clamp(1.7rem,4vw,2.4rem);margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 20px}
+.voice{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin-bottom:28px}
+.voice button{background:var(--ac);color:var(--bg);border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer}
+.voice small{color:var(--mut)}
+.tl{display:grid;grid-template-columns:96px 1fr;gap:6px 22px;margin:0 0 24px}
+.tl .y{font:800 1.35rem "Bricolage Grotesque",sans-serif;color:var(--ac);text-align:right;padding-top:2px}
+.tl .t{border-left:3px solid var(--hi);padding:0 0 18px 18px}
+.tl .t b{display:block;font-family:"Bricolage Grotesque",sans-serif}
+.key{background:var(--card);border-left:6px solid var(--hi);padding:14px 18px;border-radius:0 10px 10px 0;margin:22px 0}
+.nav2{display:flex;justify-content:space-between;margin-top:36px}
+.btn{background:var(--ac);color:var(--bg);border:0;border-radius:8px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:1rem}
+.btn.g{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:22px}
+.q h3{margin:0 0 4px;font-size:1.25rem}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border:1px solid var(--bd);border-radius:8px;background:transparent;color:var(--fg);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.bad{border-color:var(--ko);color:var(--ko)}.opt.good{border-color:var(--ok);color:var(--ok);font-weight:600}
+.msg{min-height:1.6em;margin:10px 0;font-weight:600}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden;margin-bottom:18px}.bar i{display:block;height:100%;background:var(--hi);transition:width .3s}
+.res{font:800 3rem "Bricolage Grotesque",sans-serif}
+@media(max-width:560px){.tl{grid-template-columns:62px 1fr;gap:6px 12px}.tl .y{font-size:1rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style></head><body>
+<header><h1>Inteligencia Artificial: de Turing a hoy</h1>
+<p>Curso básico en 7 módulos con narración en voz. Al final, una evaluación: necesitas más de 80 % para aprobar y tienes 3 intentos.</p></header>
+<nav id="nav" aria-label="Módulos"></nav>
+<main id="app"></main>
+<script>
+/* ===== CONTENIDO ===== */
+const MODS=[
+{t:"¿Qué es la IA?",s:"Definiciones y tipos",
+ n:"La inteligencia artificial es la rama de la informática que crea sistemas capaces de realizar tareas que normalmente requieren inteligencia humana: reconocer imágenes, entender lenguaje, tomar decisiones o aprender de la experiencia. No es una sola tecnología, sino una familia de técnicas. La IA simbólica sigue reglas escritas por personas. El aprendizaje automático aprende patrones a partir de datos. El aprendizaje profundo usa redes neuronales de muchas capas. Y la IA generativa crea texto, imágenes, audio o vídeo nuevos. Hoy toda la IA es estrecha: hace bien tareas concretas. La IA general, que igualaría a una persona en cualquier tarea, todavía no existe.",
+ h:[["Definición","Sistemas que perciben, razonan, aprenden o generan contenido."],["IA estrecha","La que existe hoy: excelente en tareas concretas, sin comprensión general."],["IA general (AGI)","Hipotética: igualaría a un humano en cualquier tarea. Aún no existe."]],
+ k:"IA ⊃ Aprendizaje automático ⊃ Aprendizaje profundo ⊃ IA generativa."},
+{t:"Los orígenes",s:"1943 – 1956",
+ n:"Los cimientos se pusieron antes de que existiera el término. En 1943, Warren McCulloch y Walter Pitts propusieron un modelo matemático de neurona. En 1950, Alan Turing publicó el artículo Computing Machinery and Intelligence y planteó la pregunta de si las máquinas pueden pensar, junto con su famosa prueba. En 1956, en la conferencia de Dartmouth, John McCarthy, Marvin Minsky, Claude Shannon y otros acuñaron el término inteligencia artificial y fundaron oficialmente la disciplina.",
+ tl:[["1943","McCulloch y Pitts publican el primer modelo matemático de una neurona artificial."],["1950","Alan Turing propone el Test de Turing para evaluar si una máquina exhibe conducta inteligente."],["1951","Marvin Minsky y Dean Edmonds construyen SNARC, una de las primeras redes neuronales físicas."],["1956","Conferencia de Dartmouth: John McCarthy acuña el término «inteligencia artificial»."]],
+ k:"La IA nació como disciplina en el verano de 1956, en Dartmouth."},
+{t:"Primer auge e inviernos",s:"1957 – 1990",
+ n:"Llegaron años de gran optimismo. En 1958, Frank Rosenblatt creó el perceptrón. En 1966, Joseph Weizenbaum presentó ELIZA, un programa que simulaba a un psicoterapeuta. Pero las promesas superaron a los resultados y los fondos se recortaron: fue el primer invierno de la IA, hacia 1974. En los años ochenta resurgió con los sistemas expertos, programas con reglas de especialistas, pero su mantenimiento era caro y llegó un segundo invierno a finales de esa década.",
+ tl:[["1958","Rosenblatt crea el perceptrón, precursor de las redes neuronales."],["1966","ELIZA, el primer chatbot, conversa con reglas sencillas."],["1974","Primer invierno de la IA: recortes de financiación por expectativas incumplidas."],["1980s","Auge de los sistemas expertos en empresas y medicina."],["1986","Rumelhart, Hinton y Williams popularizan la retropropagación para entrenar redes."],["~1987","Segundo invierno: los sistemas expertos resultan costosos y frágiles."]],
+ k:"Un invierno de la IA es un periodo de desencanto y poca inversión tras expectativas exageradas."},
+{t:"Aprendizaje automático",s:"1990 – 2011",
+ n:"Los investigadores cambiaron de enfoque: en vez de escribir reglas, dejar que las máquinas aprendan de los datos. Surgieron métodos como las máquinas de vectores de soporte y los bosques aleatorios. En 1997, Deep Blue de IBM venció al campeón mundial de ajedrez Garry Kasparov. En 2011, Watson de IBM ganó el concurso de televisión Jeopardy! contra campeones humanos. Internet aportaba cantidades enormes de datos y los ordenadores eran cada vez más potentes.",
+ tl:[["1997","Deep Blue vence a Garry Kasparov en ajedrez."],["1998","Yann LeCun presenta LeNet, una red convolucional para reconocer dígitos."],["2006","Geoffrey Hinton impulsa el término «aprendizaje profundo»."],["2011","Watson gana Jeopardy!; Apple lanza Siri."]],
+ k:"El cambio clave: de programar reglas a aprender patrones de los datos."},
+{t:"Deep learning",s:"2012 – 2016",
+ n:"En 2012, la red AlexNet, de Krizhevsky, Sutskever y Hinton, ganó con enorme ventaja el concurso ImageNet de reconocimiento de imágenes usando tarjetas gráficas. Fue el detonante del aprendizaje profundo. En 2014, Ian Goodfellow inventó las redes generativas antagónicas, o GAN, capaces de crear imágenes realistas. En 2016, AlphaGo, de DeepMind, venció a Lee Sedol en el juego de Go, algo que se creía lejano. Los asistentes de voz como Alexa y Google Assistant llegaron a millones de hogares.",
+ tl:[["2012","AlexNet gana ImageNet y desata la revolución del aprendizaje profundo."],["2014","Goodfellow presenta las GAN."],["2015","ResNet supera el nivel humano en clasificación de imágenes de ImageNet."],["2016","AlphaGo derrota a Lee Sedol."],["2020","AlphaFold 2 resuelve en gran medida el problema del plegamiento de proteínas."]],
+ k:"Datos masivos + GPU + redes profundas = el salto de 2012."},
+{t:"Transformers e IA generativa",s:"2017 – hoy",
+ n:"En 2017, un equipo de Google publicó el artículo Attention Is All You Need y presentó la arquitectura Transformer, base de casi toda la IA actual. Con ella surgieron los grandes modelos de lenguaje: BERT en 2018, la serie GPT de OpenAI, y en noviembre de 2022 ChatGPT, que llevó la IA conversacional al público general. Después llegaron otros asistentes como Claude, de Anthropic, Gemini, de Google, y Llama, de Meta. También aparecieron generadores de imágenes como DALL·E, Midjourney y Stable Diffusion, y modelos que crean audio y vídeo. Hoy los modelos son multimodales y pueden actuar como agentes que usan herramientas.",
+ tl:[["2017","Google publica el Transformer."],["2018","BERT y GPT-1 muestran el poder del preentrenamiento."],["2020","GPT-3 sorprende con 175 000 millones de parámetros."],["2022","Stable Diffusion, Midjourney y ChatGPT popularizan la IA generativa."],["2023 – hoy","Claude, Gemini, Llama y otros; modelos multimodales y agentes de IA."]],
+ k:"El Transformer permitió escalar modelos de lenguaje y abrió la era de la IA generativa."},
+{t:"Ética, riesgos y futuro",s:"Hoy y mañana",
+ n:"Una tecnología tan potente exige responsabilidad. Entre los riesgos están los sesgos heredados de los datos, las alucinaciones, que son respuestas falsas dichas con seguridad, la desinformación, los problemas de privacidad y derechos de autor, y el impacto en el empleo. Por eso se desarrollan regulaciones, como la Ley de IA de la Unión Europea, y prácticas de IA responsable. Para usarla bien: verifica la información importante, no compartas datos sensibles, y recuerda que la IA es una herramienta que amplifica tu trabajo, no un sustituto de tu criterio.",
+ h:[["Sesgo","El modelo puede reproducir prejuicios presentes en sus datos."],["Alucinación","Respuesta inventada que suena convincente. Siempre verifica."],["Privacidad","No compartas datos personales o confidenciales sin saber cómo se usan."],["Regulación","Ejemplo: la Ley de IA de la Unión Europea clasifica los usos por nivel de riesgo."]],
+ k:"Usa la IA con criterio: verifica, protege tus datos y mantén la supervisión humana."}
+];
+const QS=[
+["¿En qué año se acuñó el término «inteligencia artificial»?",["1943","1950","1956","1997"],2],
+["¿Quién propuso la prueba para evaluar si una máquina exhibe conducta inteligente?",["Alan Turing","John McCarthy","Geoffrey Hinton","Frank Rosenblatt"],0],
+["¿Qué fue un «invierno de la IA»?",["Un avance técnico en redes","Un periodo de recortes y desencanto tras expectativas exageradas","Un tipo de chip","Un concurso de ajedrez"],1],
+["¿Qué programa de los años 60 simulaba a un psicoterapeuta?",["Watson","AlphaGo","ELIZA","Siri"],2],
+["¿Qué sistema de IBM venció a Garry Kasparov en 1997?",["Watson","Deep Blue","AlexNet","LeNet"],1],
+["¿Qué red ganó ImageNet en 2012 y desató el aprendizaje profundo?",["AlexNet","SNARC","BERT","ELIZA"],0],
+["¿Qué logró AlphaGo en 2016?",["Ganar Jeopardy!","Plegar proteínas","Vencer a Lee Sedol en Go","Crear el primer chatbot"],2],
+["¿Qué arquitectura, presentada en 2017, es la base de los modelos de lenguaje actuales?",["Perceptrón","Transformer","Sistema experto","Máquina de vectores de soporte"],1],
+["¿Cómo se llama a una respuesta falsa pero convincente de un modelo de IA?",["Sesgo","Overfitting","Alucinación","Prompt"],2],
+["¿Cuál de estas afirmaciones sobre la IA actual es correcta?",["Ya existe una IA general equivalente a un humano","Toda la IA actual es estrecha: destaca en tareas concretas","La IA no necesita datos","Nunca se equivoca"],1]
+];
+const PASS=0.8, MAX_EXAM=3, MAX_Q=3, KEY="curso_ia_v1";
+
+/* ===== ESTADO ===== */
+let st=JSON.parse(localStorage.getItem(KEY)||'{"done":[],"used":0,"passed":false}');
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+let cur=0;const $=s=>document.querySelector(s),app=$("#app"),nav=$("#nav");
+
+/* ===== VOZ (mp3 neuronal si existe; si no, voz femenina del navegador) ===== */
+let audio=null;
+function stopVoice(){speechSynthesis.cancel();if(audio){audio.pause();audio=null}}
+function pickVoice(){
+ const v=speechSynthesis.getVoices().filter(x=>/^es/i.test(x.lang));
+ const fem=/sabina|helena|laura|paulina|monica|mónica|dalia|elvira|elena|lucia|lucía|salome|salomé|paloma|female|mujer|google español/i;
+ const score=x=>(/natural|online|neural/i.test(x.name)?4:0)+(fem.test(x.name)?3:0)+(/MX|419|US/.test(x.lang)?1:0);
+ return v.sort((a,b)=>score(b)-score(a))[0];
+}
+function speakTTS(text,btn){
+ const u=new SpeechSynthesisUtterance(text),v=pickVoice();
+ if(v){u.voice=v;u.lang=v.lang}else u.lang="es-MX";
+ u.rate=.95;u.pitch=1;u.onend=()=>btn.textContent="▶ Escuchar módulo";
+ speechSynthesis.speak(u);btn.textContent="■ Detener";
+}
+function play(i,btn){
+ if(btn.textContent.startsWith("■")){stopVoice();btn.textContent="▶ Escuchar módulo";return}
+ stopVoice();
+ audio=new Audio(`audio/modulo-${i+1}.mp3`);
+ audio.onended=()=>btn.textContent="▶ Escuchar módulo";
+ audio.onerror=()=>{audio=null;speakTTS(MODS[i].n,btn)};
+ audio.play().then(()=>btn.textContent="■ Detener").catch(()=>{audio=null;speakTTS(MODS[i].n,btn)});
+}
+speechSynthesis.onvoiceschanged=()=>{};
+
+/* ===== NAV ===== */
+function drawNav(){
+ nav.innerHTML=MODS.map((m,i)=>`<button class="${i===cur?'on':''} ${st.done.includes(i)?'done':''}" data-i="${i}">${i+1}. ${m.t}</button>`).join("")+
+ `<button class="${cur===99?'on':''} ${st.passed?'done':''}" data-i="99">Evaluación</button>`;
+ nav.querySelectorAll("button").forEach(b=>b.onclick=()=>go(+b.dataset.i));
+}
+function go(i){
+ if(i===99&&st.done.length<MODS.length){alert("Completa los 7 módulos para abrir la evaluación.");return}
+ stopVoice();cur=i;drawNav();scrollTo(0,0);i===99?exam():mod(i);
+}
+
+/* ===== MÓDULO ===== */
+function mod(i){
+ const m=MODS[i];
+ const body=m.tl?`<div class="tl">${m.tl.map(([y,t])=>`<div class="y">${y}</div><div class="t">${t}</div>`).join("")}</div>`
+  :`<div class="tl" style="grid-template-columns:1fr">${m.h.map(([a,b])=>`<div class="t"><b>${a}</b>${b}</div>`).join("")}</div>`;
+ app.innerHTML=`<section class="mod"><h2>${m.t}</h2><p class="sub">Módulo ${i+1} de ${MODS.length} · ${m.s}</p>
+ <div class="voice"><button id="pl">▶ Escuchar módulo</button><small>Narración con voz femenina en español.</small></div>
+ <p>${m.n}</p>${body}<div class="key"><b>Idea clave:</b> ${m.k}</div>
+ <div class="nav2"><button class="btn g" ${i?'':'disabled'} id="pv">Anterior</button>
+ <button class="btn" id="nx">${i<MODS.length-1?'Completar y seguir':'Completar y ir a la evaluación'}</button></div></section>`;
+ $("#pl").onclick=e=>play(i,e.target);
+ $("#pv").onclick=()=>go(i-1);
+ $("#nx").onclick=()=>{if(!st.done.includes(i))st.done.push(i);save();go(i<MODS.length-1?i+1:99)};
+}
+
+/* ===== EVALUACIÓN ===== */
+let qi,score,tries,locked;
+function exam(){
+ if(st.passed)return result(true,null,true);
+ if(st.used>=MAX_EXAM){app.innerHTML=`<h2>Sin intentos disponibles</h2><p>Usaste tus ${MAX_EXAM} intentos. Repasa los módulos y reinicia el curso para volver a empezar.</p><button class="btn" id="rs">Reiniciar curso</button>`;$("#rs").onclick=()=>{st={done:[],used:0,passed:false};save();go(0)};return}
+ app.innerHTML=`<h2>Evaluación final</h2><p>${QS.length} preguntas. Necesitas más de ${PASS*100} % (${Math.floor(QS.length*PASS)+1} aciertos o más). Si fallas una pregunta tienes ${MAX_Q} oportunidades; a la tercera falla se muestra la respuesta correcta y sigues. <b>Solo cuenta como acierto responder bien a la primera.</b></p>
+ <p>Intentos de evaluación disponibles: <b>${MAX_EXAM-st.used}</b> de ${MAX_EXAM}.</p><button class="btn" id="go">Comenzar</button>`;
+ $("#go").onclick=()=>{st.used++;save();qi=0;score=0;question()};
+}
+function question(){
+ if(qi>=QS.length)return finish();
+ const [q,o,c]=QS[qi];tries=0;locked=false;
+ app.innerHTML=`<div class="bar"><i style="width:${qi/QS.length*100}%"></i></div><div class="q"><h3>Pregunta ${qi+1} de ${QS.length}</h3><p>${q}</p>
+ ${o.map((t,k)=>`<button class="opt" data-k="${k}">${t}</button>`).join("")}<div class="msg" id="ms" role="status"></div><div id="ac"></div></div>`;
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k,c));
+}
+function answer(k,c){
+ if(locked)return;const b=app.querySelector(`[data-k="${k}"]`),ms=$("#ms");
+ if(k===c){
+  locked=true;b.classList.add("good");if(tries===0)score++;
+  ms.style.color="var(--ok)";ms.textContent=tries===0?"¡Correcto!":"Correcto. Esta pregunta no suma porque no fue a la primera.";
+  next();
+ }else{
+  tries++;b.classList.add("bad");b.disabled=true;
+  if(tries>=MAX_Q){
+   locked=true;app.querySelector(`[data-k="${c}"]`).classList.add("good");
+   ms.style.color="var(--ko)";ms.textContent="Se agotaron los intentos. La respuesta correcta está marcada en verde.";next();
+  }else{ms.style.color="var(--ko)";ms.textContent=`Incorrecto. Te quedan ${MAX_Q-tries} intento(s) en esta pregunta.`}
+ }
+}
+function next(){$("#ac").innerHTML=`<button class="btn" id="n">${qi<QS.length-1?'Siguiente':'Ver resultado'}</button>`;$("#n").onclick=()=>{qi++;question()}}
+function finish(){
+ const pct=score/QS.length;if(pct>PASS){st.passed=true;save()}
+ result(pct>PASS,score,false);
+}
+function result(ok,sc,again){
+ drawNav();
+ if(again){app.innerHTML=`<div class="res" style="color:var(--ok)">Curso aprobado</div><p>Ya completaste la evaluación. ¡Felicitaciones!</p>`;return}
+ const left=MAX_EXAM-st.used;
+ app.innerHTML=`<div class="res" style="color:var(--${ok?'ok':'ko'})">${Math.round(sc/QS.length*100)} %</div>
+ <p>${sc} de ${QS.length} aciertos a la primera. ${ok?'<b>¡Aprobaste el curso!</b> Superaste el 80 %.':`No alcanzaste el mínimo (más de 80 %). ${left>0?`Te quedan <b>${left}</b> intento(s) de evaluación.`:'Ya no tienes intentos.'}`}</p>
+ <button class="btn" id="rt">${ok?'Volver al inicio':left>0?'Reintentar evaluación':'Ver opciones'}</button>`;
+ $("#rt").onclick=()=>ok?go(0):go(99);
+}
+drawNav();mod(0);
+</script></body></html>
